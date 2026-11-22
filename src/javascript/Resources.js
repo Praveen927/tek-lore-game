@@ -13,6 +13,7 @@ export default class Resources extends EventEmitter
         this.items = {}
 
         this.loader.load([
+
             // Matcaps
             { name: 'matcapBeige', source: './models/matcaps/beige.png', type: 'texture' },
             { name: 'matcapBlack', source: './models/matcaps/black.png', type: 'texture' },
@@ -72,7 +73,7 @@ export default class Resources extends EventEmitter
             { name: 'introDevBase', source: './models/intro/dev/base.glb' },
             { name: 'introDevCollision', source: './models/intro/dev/collision.glb' },
 
-            // Intro
+            // Crossroads
             { name: 'crossroadsStaticBase', source: './models/crossroads/static/base.glb' },
             { name: 'crossroadsStaticCollision', source: './models/crossroads/static/collision.glb' },
             { name: 'crossroadsStaticFloorShadow', source: './models/crossroads/static/floorShadow.png', type: 'texture' },
@@ -83,6 +84,7 @@ export default class Resources extends EventEmitter
             { name: 'carDefaultBackLightsBrake', source: './models/car/default/backLightsBrake.glb' },
             { name: 'carDefaultBackLightsReverse', source: './models/car/default/backLightsReverse.glb' },
             { name: 'carDefaultAntena', source: './models/car/default/antena.glb' },
+
             // { name: 'carDefaultBunnyEarLeft', source: './models/car/default/bunnyEarLeft.glb' },
             // { name: 'carDefaultBunnyEarRight', source: './models/car/default/bunnyEarRight.glb' },
 
@@ -99,40 +101,39 @@ export default class Resources extends EventEmitter
             { name: 'projectsBoardStructureFloorShadow', source: './models/projects/board/floorShadow.png', type: 'texture' },
             { name: 'projectsBoardPlane', source: './models/projects/board/plane.glb' },
 
-            { name: 'projectsDistinctionsAwwwardsBase', source: './models/projects/distinctions/awwwards/base.glb' },
-            { name: 'projectsDistinctionsAwwwardsCollision', source: './models/projects/distinctions/awwwards/collision.glb' },
-            { name: 'projectsDistinctionsFWABase', source: './models/projects/distinctions/fwa/base.glb' },
-            { name: 'projectsDistinctionsFWACollision', source: './models/projects/distinctions/fwa/collision.glb' },
-            { name: 'projectsDistinctionsCSSDABase', source: './models/projects/distinctions/cssda/base.glb' },
-            { name: 'projectsDistinctionsCSSDACollision', source: './models/projects/distinctions/cssda/collision.glb' },
+            // Distinction A-D (disabled)
+            // { name: 'projectsDistinctionsAwwwardsBase', source: './models/projects/distinctions/awwwards/base.glb' },
+            // { name: 'projectsDistinctionsAwwwardsCollision', source: './models/projects/distinctions/awwwards/collision.glb' },
+            // { name: 'projectsDistinctionsFWABase', source: './models/projects/distinctions/fwa/base.glb' },
+            // { name: 'projectsDistinctionsFWACollision', source: './models/projects/distinctions/fwa/collision.glb' },
+            // { name: 'projectsDistinctionsCSSDABase', source: './models/projects/distinctions/cssda/base.glb' },
+            // { name: 'projectsDistinctionsCSSDACollision', source: './models/projects/distinctions/cssda/collision.glb' },
 
-            { name: 'projectsLuniFloor', source: './models/projects/luni/floorTexture.webp', type: 'texture' },
-            { name: 'projectsBonhomme10ansFloor', source: './models/projects/bonhomme10ans/floorTexture.webp', type: 'texture' },
-            { name: 'projectsThreejsJourneyFloor', source: './models/projects/threejsJourney/floorTexture.webp', type: 'texture' },
-            { name: 'projectsMadboxFloor', source: './models/projects/madbox/floorTexture.png', type: 'texture' },
-            { name: 'projectsScoutFloor', source: './models/projects/scout/floorTexture.png', type: 'texture' },
-            { name: 'projectsChartogneFloor', source: './models/projects/chartogne/floorTexture.png', type: 'texture' },
-            // { name: 'projectsZenlyFloor', source: './models/projects/zenly/floorTexture.png', type: 'texture' },
-            { name: 'projectsCitrixRedbullFloor', source: './models/projects/citrixRedbull/floorTexture.png', type: 'texture' },
-            { name: 'projectsPriorHoldingsFloor', source: './models/projects/priorHoldings/floorTexture.png', type: 'texture' },
-            { name: 'projectsOranoFloor', source: './models/projects/orano/floorTexture.png', type: 'texture' },
-            // { name: 'projectsGleecChatFloor', source: './models/projects/gleecChat/floorTexture.png', type: 'texture' },
-            // { name: 'projectsKepplerFloor', source: './models/projects/keppler/floorTexture.png', type: 'texture' },
+            // { name: 'projectsLuniFloor', source: './models/projects/luni/floorTexture.webp', type: 'texture' },
+            // { name: 'projectsBonhomme10ansFloor', source: './models/projects/bonhomme10ans/floorTexture.webp', type: 'texture' },
+            // { name: 'projectsThreejsJourneyFloor', source: './models/projects/threejsJourney/floorTexture.webp', type: 'texture' },
+            // { name: 'projectsMadboxFloor', source: './models/projects/madbox/floorTexture.png', type: 'texture' },
+            // { name: 'projectsScoutFloor', source: './models/projects/scout/floorTexture.png', type: 'texture' },
+            // { name: 'projectsChartogneFloor', source: './models/projects/chartogne/floorTexture.png', type: 'texture' },
+            // { name: 'projectsPriorHoldingsFloor', source: './models/projects/priorHoldings/floorTexture.png', type: 'texture' },
+            // { name: 'projectsOranoFloor', source: './models/projects/orano/floorTexture.png', type: 'texture' },
+            // // { name: 'projectsGleecChatFloor', source: './models/projects/gleecChat/floorTexture.png', type: 'texture' },
+            // // { name: 'projectsKepplerFloor', source: './models/projects/keppler/floorTexture.png', type: 'texture' },
 
             // Information
             { name: 'informationStaticBase', source: './models/information/static/base.glb' },
             { name: 'informationStaticCollision', source: './models/information/static/collision.glb' },
             { name: 'informationStaticFloorShadow', source: './models/information/static/floorShadow.png', type: 'texture' },
 
-            { name: 'informationBaguetteBase', source: './models/information/baguette/base.glb' },
-            { name: 'informationBaguetteCollision', source: './models/information/baguette/collision.glb' },
+            // { name: 'informationBaguetteBase', source: './models/information/baguette/base.glb' },
+            // { name: 'informationBaguetteCollision', source: './models/information/baguette/collision.glb' },
 
-            { name: 'informationContactTwitterLabel', source: './models/information/static/contactTwitterLabel.png', type: 'texture' },
-            { name: 'informationContactGithubLabel', source: './models/information/static/contactGithubLabel.png', type: 'texture' },
-            { name: 'informationContactLinkedinLabel', source: './models/information/static/contactLinkedinLabel.png', type: 'texture' },
-            { name: 'informationContactMailLabel', source: './models/information/static/contactMailLabel.png', type: 'texture' },
+            // { name: 'informationContactTwitterLabel', source: './models/information/static/contactTwitterLabel.png', type: 'texture' },
+            // { name: 'informationContactGithubLabel', source: './models/information/static/contactGithubLabel.png', type: 'texture' },
+            // { name: 'informationContactLinkedinLabel', source: './models/information/static/contactLinkedinLabel.png', type: 'texture' },
+            // { name: 'informationContactMailLabel', source: './models/information/static/contactMailLabel.png', type: 'texture' },
 
-            { name: 'informationActivities', source: './models/information/static/activities.png', type: 'texture' },
+            // { name: 'informationActivities', source: './models/information/static/activities.png', type: 'texture' },
 
             // Playground
             { name: 'playgroundStaticBase', source: './models/playground/static/base.glb' },
@@ -213,15 +214,16 @@ export default class Resources extends EventEmitter
             { name: 'konamiLabel', source: './models/konami/label.png', type: 'texture' },
             { name: 'konamiLabelTouch', source: './models/konami/label-touch.png', type: 'texture' },
 
-            // Wigs
-            { name: 'wig1', source: './models/wigs/wig1.glb' },
-            { name: 'wig2', source: './models/wigs/wig2.glb' },
-            { name: 'wig3', source: './models/wigs/wig3.glb' },
-            { name: 'wig4', source: './models/wigs/wig4.glb' },
+            // Wigs (removed in Phase 1 per plan)
+            // { name: 'wig1', source: './models/wigs/wig1.glb' },
+            // { name: 'wig2', source: './models/wigs/wig2.glb' },
+            // { name: 'wig3', source: './models/wigs/wig3.glb' },
+            // { name: 'wig4', source: './models/wigs/wig4.glb' },
 
-            // // Egg
+            // // Egg (removed)
             // { name: 'eggBase', source: './models/egg/base.glb' },
             // { name: 'eggCollision', source: './models/egg/collision.glb' },
+
         ])
 
         this.loader.on('fileEnd', (_resource, _data) =>

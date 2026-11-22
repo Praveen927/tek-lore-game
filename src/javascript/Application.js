@@ -6,7 +6,6 @@ import Time from './Utils/Time.js'
 import World from './World/index.js'
 import Resources from './Resources.js'
 import Camera from './Camera.js'
-import ThreejsJourney from './ThreejsJourney.js'
 
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js'
@@ -16,9 +15,7 @@ import GlowsPass from './Passes/Glows.js'
 
 export default class Application
 {
-    /**
-     * Constructor
-     */
+    /** Constructor */
     constructor(_options)
     {
         // Options
@@ -36,12 +33,9 @@ export default class Application
         this.setPasses()
         this.setWorld()
         this.setTitle()
-        this.setThreejsJourney()
     }
 
-    /**
-     * Set config
-     */
+    /** Set config */
     setConfig()
     {
         this.config = {}
@@ -61,9 +55,7 @@ export default class Application
         }, { once: true })
     }
 
-    /**
-     * Set debug
-     */
+    /** Set debug */
     setDebug()
     {
         if(this.config.debug)
@@ -72,9 +64,7 @@ export default class Application
         }
     }
 
-    /**
-     * Set renderer
-     */
+    /** Set renderer */
     setRenderer()
     {
         // Scene
@@ -100,9 +90,7 @@ export default class Application
         })
     }
 
-    /**
-     * Set camera
-     */
+    /** Set camera */
     setCamera()
     {
         this.camera = new Camera({
@@ -162,7 +150,7 @@ export default class Application
         }
 
         this.passes.glowsPass = new ShaderPass(GlowsPass)
-        this.passes.glowsPass.color = '#ffcfe0'
+        this.passes.glowsPass.color = '#e0e0e0';
         this.passes.glowsPass.material.uniforms.uPosition.value = new THREE.Vector2(0, 0.25)
         this.passes.glowsPass.material.uniforms.uRadius.value = 0.7
         this.passes.glowsPass.material.uniforms.uColor.value = new THREE.Color(this.passes.glowsPass.color)
@@ -182,7 +170,6 @@ export default class Application
             {
                 this.passes.glowsPass.material.uniforms.uColor.value = new THREE.Color(this.passes.glowsPass.color)
             })
-            folder.add(this.passes.glowsPass.material.uniforms.uAlpha, 'value').step(0.001).min(0).max(1).name('alpha')
         }
 
         // Add passes
@@ -215,9 +202,7 @@ export default class Application
         })
     }
 
-    /**
-     * Set world
-     */
+    /** Set world */
     setWorld()
     {
         this.world = new World({
@@ -234,9 +219,7 @@ export default class Application
         this.scene.add(this.world.container)
     }
 
-    /**
-     * Set title
-     */
+    /** Set title */
     setTitle()
     {
         this.title = {}
@@ -244,7 +227,6 @@ export default class Application
         this.title.width = 20
         this.title.position = 0
         this.title.$element = document.querySelector('title')
-        this.title.absolutePosition = Math.round(this.title.width * 0.25)
 
         this.time.on('tick', () =>
         {
@@ -262,26 +244,11 @@ export default class Application
         window.setInterval(() =>
         {
             this.title.position = Math.round(this.title.absolutePosition % this.title.width)
-
             document.title = `${'_'.repeat(this.title.width - this.title.position)}🚗${'_'.repeat(this.title.position)}`
         }, this.title.frequency)
     }
 
-    /**
-     * Set Three.js Journey
-     */
-    setThreejsJourney()
-    {
-        this.threejsJourney = new ThreejsJourney({
-            config: this.config,
-            time: this.time,
-            world: this.world
-        })
-    }
-
-    /**
-     * Destructor
-     */
+    /** Destructor */
     destructor()
     {
         this.time.off('tick')
