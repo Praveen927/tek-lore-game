@@ -11,11 +11,13 @@ A 3D, browser-based "drive a car around a world" game built with Three.js, conve
 - **All copy and links live in `config.json`** at the repo root (git-ignored). `src/javascript/content/tekion.js` loads it (falling back to the committed `config.example.json`) and exports `brand`, `colors`, `social`, `products`, `achievements`, `testimonials`. Sections must not hardcode text or URLs.
   - Setup on a fresh clone: `cp config.example.json config.json`, then fill in the arrays.
   - Item shape: `{ id, name, desc, href }`. An empty `social` array means the Connect pads are not rendered.
-- **Never invent Tekion facts, URLs, quotes or brand colours.** The palette in `content/tekion.js` (`colors`) is a neutral *placeholder*; override it from `config.json` `"colors"` once real brand colours are confirmed (`primary, accent, surface, text, tree, glow, floor{topLeft,topRight,bottomRight,bottomLeft}`).
-- **No Blender.** Text and scenery that used to be baked into GLB/PNG files is generated in code (see Layout: `Words.js`, `Labels.js`, `Signpost.js`, `Props.js`, `Theme.js`). Do not edit `resources/3d/*`.
+- **Never invent Tekion facts, URLs, quotes or brand colours.** The palette in `content/tekion.js` (`colors`) is a neutral *placeholder*; override it from `config.json` `"colors"` once real brand colours are confirmed (`primary, title, accent, surface, text, glow, shadow, car, floor{topLeft,topRight,bottomRight,bottomLeft}, shades{...}`).
+- **No Blender.** Text and scenery that used to be baked into GLB/PNG files is generated in code (see Layout: `Buildings.js`, `Words.js`, `Labels.js`, `Links.js`, `Theme.js`). Do not edit `resources/3d/*`.
 - Remove resources from `Resources.js` and their consumers in the same commit. Update this file when structure changes.
 
-World layout (x, y): Intro (0,0) -> Crossroads (0,-30) -> Products row east (30,-30), Connect south (1.2,-55), Achievements row (30,-75), Testimonials row (30,-120), Playground west (-38,-34), Konami easter egg (-60,-100).
+World layout (x, y): Intro (0,0), Connect (34,-8), Campus hub (0,-46) with one building per product on an ellipse (rx 34, ry 24) around it, Achievements board row (y -95) and Testimonials board row (y -118), both centred on x = 0 with a gap for the road, Konami easter egg (-60,-100). Roads are drawn by `World/Links.js`.
+
+**Visual target:** a light, cool "campus" like the design reference (pale floor, white buildings with pale-blue glass, translucent glass server farm with racks, thin white roads with travelling light-blue pulses). Colours live in `colors` in `content/tekion.js`.
 
 There are no tests, no linter, no TypeScript, no CI config. Plain ES modules.
 
@@ -27,7 +29,7 @@ npm run dev      # Vite dev server (host: true, auto-opens browser)
 npm run build    # outputs to dist/ (sourcemaps on)
 ```
 
-Debug mode: open the app with `#debug` in the URL. This creates a `dat.GUI` panel. `#cybertruck` swaps the car model.
+Debug mode: open the app with `#debug` in the URL. This creates a `dat.GUI` panel. The car is the Cybertruck model by default (dirty off-white body, colour `colors.car` in `content/tekion.js`); `#classic` restores the original car, and `#cybertruck` also enables the debug "shooting ball" (press B).
 
 ## Stack
 
@@ -60,13 +62,13 @@ src/
       Car.js, Controls.js (keyboard + touch), Camera-follow lives in Application
       Areas.js / Area.js        interactive zones (key prompt, fence, floor border)
       Zones.js / Zone.js        invisible trigger regions
-      Tiles.js, Walls.js, Floor.js, Shadows.js, Materials.js
+      Floor.js, Shadows.js, Materials.js
       Sounds.js         howler wrapper + engine sound
       EasterEggs.js     Konami code
+      Buildings.js      procedural buildings (warehouse, office, showroom, depot, annex, house) and the server farm, built at runtime
+      Links.js          roads: thin white lines with pulses
       Words.js          3D text: wordLetters() (physical letters), wordGeometry() (merged, for signs)
       Labels.js         canvas textures: alphaLabel() (floor/area labels), card() (board cards)
-      Props.js          procedural physical props: trophy(), quote(), productCube()
-      Signpost.js       generated signposts
       Theme.js          matcapTexture(hex): matcaps generated from palette colours
       Sections/         one class per themed area of the world (see below)
   shaders/<name>/{vertex,fragment}.glsl + partials/
@@ -89,7 +91,9 @@ resources/3d/           Blender sources (.blend) - not shipped, large binaries
 
 ## Common tasks
 
-**Add or edit a product / achievement / testimonial**: edit the matching array in `config.json` (no code change). Boards are laid out by `World/Sections/BoardsSection.js` (one board, floor label, prop and link area per item, 16 units apart along +x). Rows are instantiated in `World.setSections()` with their `x, y`, `tag` and `prop`.
+**Product pictures**: drop `<name>.png|jpg|webp` into `src/images/products/`. A product picks it up automatically when the file name matches the product name (`crm.png` -> "Tekion CRM", `tekion_pay.png` -> "Tekion Pay"), or set `"image": "file.png"` on the product in `config.json`. The picture floats above the building only while the car is nearest to that building's entrance; products without a picture show the banner card the same way.
+
+**Add or edit a product / achievement / testimonial**: edit the matching array in `config.json` (no code change). Products become buildings in `World/Sections/CampusSection.js` (types cycle through `Buildings.js`); achievements and testimonials are board rows from `World/Sections/BoardsSection.js` (one board, floor label and link area per item, 10 units apart along +x), instantiated in `World.setSections()`.
 
 **Add a new world section**: create `World/Sections/FooSection.js` (receive `time, resources, objects, areas, zones, tiles, debug, x, y`; expose `this.container` as an `Object3D`), then instantiate and `this.container.add(...)` it in `World.setSections()`. For a new board row just add another `BoardsSection`. Generated objects pass `{ base: { children: [...] }, collision: { children: [...] } }` to `objects.add()`; visual meshes are named `shadeXxx` (matcap lookup), collision meshes `cube`/`cylinder` with the size in `scale`.
 
@@ -97,7 +101,7 @@ resources/3d/           Blender sources (.blend) - not shipped, large binaries
 
 **Add a shader**: create `src/shaders/<name>/{vertex,fragment}.glsl`, wrap in `Materials/<Name>.js` or `Passes/<Name>.js`. Reuse chunks via `#include ../partials/<file>.glsl`.
 
-**Change content/branding**: copy and palette in `config.json`; `src/index.html` (title, meta), `IntroSection.js` (title letters come from `brand.name`), `CrossroadsSection.js` (signposts), `ConnectSection.js`, `Application.setTitle` (animated tab title), favicons in `src/favicon` and `static/favicon` (still the original author's artwork: replace with Tekion's), social images in `static/social`.
+**Change content/branding**: copy and palette in `config.json`; `src/index.html` (title, meta), `IntroSection.js` (title letters come from `brand.name`), `CampusSection.js` (hub + product buildings), `ConnectSection.js`, `Application.setTitle` (animated tab title), favicons in `src/favicon` and `static/favicon` (still the original author's artwork: replace with Tekion's), social images in `static/social`.
 
 ## Gotchas
 

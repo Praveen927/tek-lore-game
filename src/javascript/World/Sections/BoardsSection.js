@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import gsap from 'gsap'
 
 import ProjectBoardMaterial from '../../Materials/ProjectBoard.js'
+import Links from '../Links.js'
 import { alphaLabel, card } from '../Labels.js'
 import { colors } from '../../content/tekion.js'
 
@@ -9,7 +10,7 @@ import { colors } from '../../content/tekion.js'
  * A row of boards (one per content item) along +x, reusing the original board structure and plane.
  * Used for Products, Achievements and Testimonials: only the data, the tag and the prop change.
  *
- * options: x, y, items [{ name, desc, href }], tag, prop (function returning a Props.js descriptor), cameraAngle
+ * options: x, y, items [{ name, desc, href }], tag
  */
 export default class BoardsSection
 {
@@ -23,13 +24,11 @@ export default class BoardsSection
         this.objects = _options.objects
         this.areas = _options.areas
         this.zones = _options.zones
-        this.tiles = _options.tiles
         this.x = _options.x
         this.y = _options.y
         this.items = _options.items
         this.tag = _options.tag
-        this.prop = _options.prop
-        this.interDistance = _options.interDistance || 16
+        this.interDistance = _options.interDistance || 9
         this.accent = _options.accent || colors.accent
 
         // Set up
@@ -47,7 +46,7 @@ export default class BoardsSection
         this.boards = []
         this.items.forEach((_item, _index) => this.add(_item, _index))
 
-        this.setTiles()
+        this.setRoad()
         this.setZone()
     }
 
@@ -58,18 +57,19 @@ export default class BoardsSection
         this.resources.items.areaOpenTexture.magFilter = THREE.NearestFilter
         this.resources.items.areaOpenTexture.minFilter = THREE.LinearFilter
         this.meshes.boardPlane = this.resources.items.projectsBoardPlane.scene.children[0]
-        this.meshes.areaLabel = new THREE.Mesh(new THREE.PlaneGeometry(2, 0.5), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, color: 0xffffff, alphaMap: this.resources.items.areaOpenTexture }))
+        this.meshes.areaLabel = new THREE.Mesh(new THREE.PlaneGeometry(2, 0.5), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, color: 0x5b6785, alphaMap: this.resources.items.areaOpenTexture }))
         this.meshes.areaLabel.matrixAutoUpdate = false
 
         this.geometries = {}
-        this.geometries.floor = new THREE.PlaneGeometry(10, 2.5)
+        this.geometries.floor = new THREE.PlaneGeometry(7, 1.8)
     }
 
     add(_item, _index)
     {
-        // Gentle zigzag so the row does not look like a ruler
-        const x = this.x + _index * this.interDistance
-        const y = this.y + (_index % 2 === 0 ? 0 : 3)
+        // Centred on this.x; an odd count is shifted by half a step so a road at this.x never crosses a board
+        const count = this.items.length
+        const x = this.x + (_index - (count - 1) / 2 + (count % 2 ? 0.5 : 0)) * this.interDistance
+        const y = this.y
 
         // Board structure with collision
         this.objects.add({
@@ -105,26 +105,10 @@ export default class BoardsSection
         // Floor label (item name)
         const floorTexture = alphaLabel(_item.name, { width: 1024, height: 256 })
         const floor = new THREE.Mesh(this.geometries.floor, new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, color: new THREE.Color(this.accent), alphaMap: floorTexture }))
-        floor.position.set(x, y - 0.5, 0)
+        floor.position.set(x, y - 0.5, 0.1)
         floor.matrixAutoUpdate = false
         floor.updateMatrix()
         this.container.add(floor)
-
-        // Prop next to the board, free to be knocked around
-        if(this.prop)
-        {
-            const prop = this.prop()
-            this.objects.add({
-                base: prop.base,
-                collision: prop.collision,
-                offset: new THREE.Vector3(x + 4.2, y + 1.2, prop.height),
-                rotation: new THREE.Euler(0, 0, 0),
-                duplicated: true,
-                shadow: prop.shadow,
-                mass: 1.5,
-                soundName: 'brick'
-            })
-        }
 
         // Link area
         const area = this.areas.add({
@@ -137,7 +121,7 @@ export default class BoardsSection
         })
 
         const areaLabel = this.meshes.areaLabel.clone()
-        areaLabel.position.set(x, y - 3, 0.001)
+        areaLabel.position.set(x, y - 3, 0.1)
         areaLabel.matrixAutoUpdate = false
         areaLabel.updateMatrix()
         this.container.add(areaLabel)
@@ -145,23 +129,20 @@ export default class BoardsSection
         this.boards.push({ x, y })
     }
 
-    setTiles()
+    setRoad()
     {
-        for(let i = 1; i < this.boards.length; i++)
-        {
-            const previous = this.boards[i - 1]
-            const current = this.boards[i]
-            const start = new THREE.Vector2(previous.x + 6, previous.y)
-            const end = new THREE.Vector2(current.x - 6, current.y)
-            this.tiles.add({ start, delta: end.clone().sub(start) })
-        }
+        // One road along the row, like the links of the campus
+        const links = new Links({ time: this.time, container: this.container })
+        const first = this.boards[0]
+        const last = this.boards[this.boards.length - 1]
+        links.add({ x: first.x - 6, y: first.y - 5 }, { x: last.x + 6, y: last.y - 5 })
     }
 
     setZone()
     {
         const length = (this.boards.length - 1) * this.interDistance
         const zone = this.zones.add({
-            position: { x: this.x + length * 0.5, y: this.y + 1.5 },
+            position: { x: (this.boards[0].x + this.boards[this.boards.length - 1].x) * 0.5, y: this.y + 1.5 },
             halfExtents: { x: length * 0.5 + this.interDistance * 0.5, y: 11 },
             data: { cameraAngle: 'projects' }
         })

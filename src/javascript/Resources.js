@@ -30,9 +30,6 @@ export default class Resources extends EventEmitter
             // { name: 'matcapGold', source: './models/matcaps/gold.png', type: 'texture' },
 
             // Intro
-            { name: 'introStaticBase', source: './models/intro/static/base.glb' },
-            { name: 'introStaticCollision', source: './models/intro/static/collision.glb' },
-            { name: 'introStaticFloorShadow', source: './models/intro/static/floorShadow.png', type: 'texture' },
 
             { name: 'introInstructionsLabels', source: './models/intro/instructions/labels.glb' },
             { name: 'introInstructionsArrows', source: './models/intro/instructions/arrows.png', type: 'texture' },
@@ -59,7 +56,6 @@ export default class Resources extends EventEmitter
             { name: 'carDefaultWheel', source: './models/car/default/wheel.glb' },
             { name: 'carDefaultBackLightsBrake', source: './models/car/default/backLightsBrake.glb' },
             { name: 'carDefaultBackLightsReverse', source: './models/car/default/backLightsReverse.glb' },
-            { name: 'carDefaultAntena', source: './models/car/default/antena.glb' },
             // { name: 'carDefaultBunnyEarLeft', source: './models/car/default/bunnyEarLeft.glb' },
             // { name: 'carDefaultBunnyEarRight', source: './models/car/default/bunnyEarRight.glb' },
 
@@ -68,7 +64,6 @@ export default class Resources extends EventEmitter
             { name: 'carCyberTruckWheel', source: './models/car/cyberTruck/wheel.glb' },
             { name: 'carCyberTruckBackLightsBrake', source: './models/car/cyberTruck/backLightsBrake.glb' },
             { name: 'carCyberTruckBackLightsReverse', source: './models/car/cyberTruck/backLightsReverse.glb' },
-            { name: 'carCyberTruckAntena', source: './models/car/cyberTruck/antena.glb' },
 
             // Project
             { name: 'projectsBoardStructure', source: './models/projects/board/structure.glb' },
@@ -84,13 +79,8 @@ export default class Resources extends EventEmitter
 
 
             // Playground
-            { name: 'playgroundStaticBase', source: './models/playground/static/base.glb' },
-            { name: 'playgroundStaticCollision', source: './models/playground/static/collision.glb' },
-            { name: 'playgroundStaticFloorShadow', source: './models/playground/static/floorShadow.png', type: 'texture' },
 
             // Brick
-            { name: 'brickBase', source: './models/brick/base.glb' },
-            { name: 'brickCollision', source: './models/brick/collision.glb' },
 
             // Horn
             { name: 'hornBase', source: './models/horn/base.glb' },
@@ -103,8 +93,6 @@ export default class Resources extends EventEmitter
             // // Distinction C
 
             // // Cone
-            // { name: 'coneBase', source: './models/cone/base.glb' },
-            // { name: 'coneCollision', source: './models/cone/collision.glb' },
 
             // // Awwwards trophy
 
@@ -130,20 +118,10 @@ export default class Resources extends EventEmitter
             { name: 'areaQuestionMark', source: './models/area/questionMark.png', type: 'texture' },
 
             // Tiles
-            { name: 'tilesABase', source: './models/tiles/a/base.glb' },
-            { name: 'tilesACollision', source: './models/tiles/a/collision.glb' },
 
-            { name: 'tilesBBase', source: './models/tiles/b/base.glb' },
-            { name: 'tilesBCollision', source: './models/tiles/b/collision.glb' },
 
-            { name: 'tilesCBase', source: './models/tiles/c/base.glb' },
-            { name: 'tilesCCollision', source: './models/tiles/c/collision.glb' },
 
-            { name: 'tilesDBase', source: './models/tiles/d/base.glb' },
-            { name: 'tilesDCollision', source: './models/tiles/d/collision.glb' },
 
-            { name: 'tilesEBase', source: './models/tiles/e/base.glb' },
-            { name: 'tilesECollision', source: './models/tiles/e/collision.glb' },
 
             // Konami
             { name: 'konamiLabel', source: './models/konami/label.png', type: 'texture' },

@@ -143,3 +143,128 @@ export function card({ tag = '', title = '', body = '', index = 0, total = 0, co
     texture.anisotropy = 4
     return texture
 }
+
+/**
+ * Frosted "glass" tag (floating cards in the reference). Transparent background, rounded corners.
+ */
+export function glassTag(_text, { width = 640, height = 190, tint = '#ffffff', text = '#2c3550' } = {})
+{
+    const element = canvas(width, height)
+    const ctx = element.getContext('2d')
+    const r = 34
+
+    ctx.beginPath()
+    ctx.roundRect(4, 4, width - 8, height - 8, r)
+    ctx.fillStyle = tint
+    ctx.globalAlpha = 0.88
+    ctx.fill()
+    ctx.globalAlpha = 1
+    ctx.lineWidth = 3
+    ctx.strokeStyle = 'rgba(190, 200, 225, 0.9)'
+    ctx.stroke()
+
+    ctx.fillStyle = text
+    ctx.textBaseline = 'middle'
+    ctx.textAlign = 'left'
+    let size = height * 0.36
+    do
+    {
+        ctx.font = `700 ${size}px ${FONT}`
+        size -= 3
+    } while(ctx.measureText(_text).width > width - 150 && size > 14)
+    ctx.fillText(_text, 110, height * 0.52)
+
+    // Little round icon
+    ctx.beginPath()
+    ctx.arc(62, height * 0.5, 20, 0, Math.PI * 2)
+    ctx.lineWidth = 5
+    ctx.strokeStyle = text
+    ctx.stroke()
+
+    const texture = new THREE.CanvasTexture(element)
+    texture.anisotropy = 4
+    return texture
+}
+
+/**
+ * Code window (the floating browser panel in the reference): title dots and coloured lines.
+ */
+export function codeWindow({ width = 640, height = 440 } = {})
+{
+    const element = canvas(width, height)
+    const ctx = element.getContext('2d')
+
+    ctx.beginPath()
+    ctx.roundRect(4, 4, width - 8, height - 8, 36)
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.82)'
+    ctx.fill()
+    ctx.lineWidth = 3
+    ctx.strokeStyle = 'rgba(190, 200, 225, 0.9)'
+    ctx.stroke()
+
+    ctx.fillStyle = '#c8cfe0'
+    for(let i = 0; i < 3; i++)
+    {
+        ctx.beginPath()
+        ctx.arc(52 + i * 36, 52, 11, 0, Math.PI * 2)
+        ctx.fill()
+    }
+
+    ctx.beginPath()
+    ctx.roundRect(60, 150, 130, 130, 28)
+    ctx.fillStyle = '#4b7be5'
+    ctx.fill()
+
+    const lines = [[250, 140, 180, '#c3c9d8'], [250, 140, 90, '#7a5be0'], [250, 190, 220, '#6aa5ec'], [250, 190, 90, '#4b7be5'], [250, 240, 160, '#c3c9d8'], [250, 290, 130, '#7a5be0']]
+    ctx.lineCap = 'round'
+    ctx.lineWidth = 14
+    lines.forEach(([x, y, length, color], i) =>
+    {
+        ctx.strokeStyle = color
+        ctx.beginPath()
+        ctx.moveTo(x + (i % 2) * 20, y + 30)
+        ctx.lineTo(x + (i % 2) * 20 + length, y + 30)
+        ctx.stroke()
+    })
+
+    const texture = new THREE.CanvasTexture(element)
+    texture.anisotropy = 4
+    return texture
+}
+
+/**
+ * Product picture as a rounded, framed card texture. Downscaled to keep GPU memory low.
+ * Resolves with { texture, aspect } once the image has loaded.
+ */
+export function imageCard(_url, { width = 1280, radius = 44, border = 16, frame = '#2c3550' } = {})
+{
+    return new Promise((_resolve, _reject) =>
+    {
+        const image = new Image()
+        image.onload = () =>
+        {
+            const aspect = image.naturalWidth / image.naturalHeight
+            const height = Math.round(width / aspect)
+            const element = canvas(width, height)
+            const ctx = element.getContext('2d')
+
+            ctx.beginPath()
+            ctx.roundRect(0, 0, width, height, radius)
+            ctx.fillStyle = frame
+            ctx.fill()
+            ctx.save()
+            ctx.beginPath()
+            ctx.roundRect(border, border, width - border * 2, height - border * 2, radius - border * 0.5)
+            ctx.clip()
+            ctx.drawImage(image, border, border, width - border * 2, height - border * 2)
+            ctx.restore()
+
+            const texture = new THREE.CanvasTexture(element)
+            texture.colorSpace = THREE.SRGBColorSpace
+            texture.anisotropy = 4
+            _resolve({ texture, aspect })
+        }
+        image.onerror = _reject
+        image.src = _url
+    })
+}

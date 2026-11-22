@@ -7,7 +7,6 @@ export default class EasterEggs
         // Options
         this.resources = _options.resources
         this.car = _options.car
-        this.walls = _options.walls
         this.objects = _options.objects
         this.materials = _options.materials
         this.areas = _options.areas

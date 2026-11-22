@@ -7,19 +7,16 @@ import Zones from './Zones.js'
 import Objects from './Objects.js'
 import Car from './Car.js'
 import Areas from './Areas.js'
-import Tiles from './Tiles.js'
-import Walls from './Walls.js'
 import IntroSection from './Sections/IntroSection.js'
 import BoardsSection from './Sections/BoardsSection.js'
-import CrossroadsSection from './Sections/CrossroadsSection.js'
 import ConnectSection from './Sections/ConnectSection.js'
-import PlaygroundSection from './Sections/PlaygroundSection.js'
 import Controls from './Controls.js'
 import Sounds from './Sounds.js'
 import gsap from 'gsap'
 import EasterEggs from './EasterEggs.js'
+import CampusSection from './Sections/CampusSection.js'
+import Links from './Links.js'
 import { products, achievements, testimonials } from '../content/tekion.js'
-import { productCube, trophy, quote } from './Props.js'
 
 export default class World
 {
@@ -70,8 +67,6 @@ export default class World
         this.setObjects()
         this.setCar()
         this.areas.car = this.car
-        this.setTiles()
-        this.setWalls()
         this.setSections()
         this.setEasterEggs()
     }
@@ -340,23 +335,6 @@ export default class World
         this.container.add(this.areas.container)
     }
 
-    setTiles()
-    {
-        this.tiles = new Tiles({
-            resources: this.resources,
-            objects: this.objects,
-            debug: this.debug
-        })
-    }
-
-    setWalls()
-    {
-        this.walls = new Walls({
-            resources: this.resources,
-            objects: this.objects
-        })
-    }
-
     setObjects()
     {
         this.objects = new Objects({
@@ -409,8 +387,6 @@ export default class World
             objects: this.objects,
             areas: this.areas,
             zones: this.zones,
-            walls: this.walls,
-            tiles: this.tiles,
             debug: this.debugFolder
         }
 
@@ -422,64 +398,48 @@ export default class World
         })
         this.container.add(this.sections.intro.container)
 
-        // Crossroads
-        this.sections.crossroads = new CrossroadsSection({
+        // Campus: server farm with one building per product
+        this.sections.campus = new CampusSection({
             ...options,
             x: 0,
-            y: - 30
+            y: - 46
         })
-        this.container.add(this.sections.crossroads.container)
-
-        // Products (east of the crossroads)
-        this.sections.products = new BoardsSection({
-            ...options,
-            x: 30,
-            y: - 30,
-            items: products,
-            tag: 'Product',
-            prop: productCube
-        })
-        this.container.add(this.sections.products.container)
+        this.container.add(this.sections.campus.container)
 
         // Connect
         this.sections.connect = new ConnectSection({
             ...options,
-            x: 1.2,
-            y: - 55
+            x: 34,
+            y: - 8
         })
         this.container.add(this.sections.connect.container)
 
         // Achievements
         this.sections.achievements = new BoardsSection({
             ...options,
-            x: 30,
-            y: - 75,
+            x: 0,
+            y: - 95,
             items: achievements,
-            tag: 'Achievement',
-            prop: trophy
+            tag: 'Achievement'
         })
         this.container.add(this.sections.achievements.container)
 
         // Testimonials
         this.sections.testimonials = new BoardsSection({
             ...options,
-            x: 30,
-            y: - 120,
+            x: 0,
+            y: - 118,
             items: testimonials,
-            tag: 'Testimonial',
-            prop: quote
+            tag: 'Testimonial'
         })
         this.container.add(this.sections.testimonials.container)
 
-        // Playground
-        this.sections.playground = new PlaygroundSection({
-            ...options,
-            x: - 38,
-            y: - 34
-            // x: - 15,
-            // y: - 4
-        })
-        this.container.add(this.sections.playground.container)
+        // Roads between the areas
+        const roads = new Links({ time: this.time, container: this.container })
+        roads.add({ x: 0, y: - 15 }, { x: 0, y: - 46 })
+        roads.add({ x: 0, y: - 46 }, { x: 0, y: - 100 })
+        roads.add({ x: 0, y: - 100 }, { x: 0, y: - 123 })
+        roads.add({ x: 8, y: - 5 }, { x: 31, y: - 9 })
     }
 
     setEasterEggs()
@@ -487,7 +447,6 @@ export default class World
         this.easterEggs = new EasterEggs({
             resources: this.resources,
             car: this.car,
-            walls: this.walls,
             objects: this.objects,
             materials: this.materials,
             areas: this.areas,

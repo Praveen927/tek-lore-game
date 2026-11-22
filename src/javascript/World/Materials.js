@@ -73,13 +73,13 @@ export default class Materials
         // Green
         this.shades.items.green = new MatcapMaterial()
         this.shades.items.green.name = 'shadeGreen'
-        this.shades.items.green.uniforms.matcap.value = matcapTexture(colors.tree)
+        this.shades.items.green.uniforms.matcap.value = matcapTexture(colors.shades.green)
         this.items.green = this.shades.items.green
 
         // Brown
         this.shades.items.brown = new MatcapMaterial()
         this.shades.items.brown.name = 'shadeBrown'
-        this.shades.items.brown.uniforms.matcap.value = matcapTexture(colors.brown)
+        this.shades.items.brown.uniforms.matcap.value = matcapTexture(colors.shades.brown)
         this.items.brown = this.shades.items.brown
 
         // Gray
@@ -91,7 +91,7 @@ export default class Materials
         // Beige
         this.shades.items.beige = new MatcapMaterial()
         this.shades.items.beige.name = 'shadeBeige'
-        this.shades.items.beige.uniforms.matcap.value = matcapTexture(colors.beige)
+        this.shades.items.beige.uniforms.matcap.value = matcapTexture(colors.shades.beige)
         this.items.beige = this.shades.items.beige
 
         // Red
@@ -105,6 +105,12 @@ export default class Materials
         this.shades.items.black.name = 'shadeBlack'
         this.shades.items.black.uniforms.matcap.value = this.resources.items.matcapBlackTexture
         this.items.black = this.shades.items.black
+
+        // Intro title
+        this.shades.items.title = new MatcapMaterial()
+        this.shades.items.title.name = 'shadeTitle'
+        this.shades.items.title.uniforms.matcap.value = matcapTexture(colors.title, 256, 0, 0.75)
+        this.items.title = this.shades.items.title
 
         // Green emerald
         this.shades.items.emeraldGreen = new MatcapMaterial()
@@ -127,13 +133,13 @@ export default class Materials
         // Yellow
         this.shades.items.yellow = new MatcapMaterial()
         this.shades.items.yellow.name = 'shadeYellow'
-        this.shades.items.yellow.uniforms.matcap.value = matcapTexture(colors.tree)
+        this.shades.items.yellow.uniforms.matcap.value = matcapTexture(colors.shades.green)
         this.items.yellow = this.shades.items.yellow
 
         // Metal
         this.shades.items.metal = new MatcapMaterial()
         this.shades.items.metal.name = 'shadeMetal'
-        this.shades.items.metal.uniforms.matcap.value = this.resources.items.matcapMetalTexture
+        this.shades.items.metal.uniforms.matcap.value = matcapTexture(colors.car, 256, 0.6) // dirty cyber truck body
         this.items.metal = this.shades.items.metal
 
         // // Gold
@@ -141,6 +147,12 @@ export default class Materials
         // this.shades.items.gold.name = 'shadeGold'
         // this.shades.items.gold.uniforms.matcap.value = this.resources.items.matcapGoldTexture
         // this.items.gold = this.shades.items.gold
+
+        // Palette: light, cool matcaps generated from content/tekion.js (buildings are white, windows pale blue)
+        for(const _name of ['white', 'gray', 'blue', 'black', 'emeraldGreen', 'purple'])
+        {
+            this.shades.items[_name].uniforms.matcap.value = matcapTexture(colors.shades[_name], 256, 0, _name === 'white' || _name === 'blue' ? 0.8 : 0.6)
+        }
 
         // Update materials uniforms
         this.shades.updateMaterials = () =>

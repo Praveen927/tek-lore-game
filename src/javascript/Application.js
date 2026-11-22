@@ -45,7 +45,7 @@ export default class Application
     {
         this.config = {}
         this.config.debug = window.location.hash === '#debug'
-        this.config.cyberTruck = window.location.hash === '#cybertruck'
+        this.config.cyberTruck = window.location.hash !== '#classic'
         this.config.touch = false
 
         window.addEventListener('touchstart', () =>
@@ -166,7 +166,7 @@ export default class Application
         this.passes.glowsPass.material.uniforms.uRadius.value = 0.7
         this.passes.glowsPass.material.uniforms.uColor.value = new THREE.Color(this.passes.glowsPass.color)
         this.passes.glowsPass.material.uniforms.uColor.value.convertLinearToSRGB()
-        this.passes.glowsPass.material.uniforms.uAlpha.value = 0.55
+        this.passes.glowsPass.material.uniforms.uAlpha.value = 0.3
 
         // Debug
         if(this.debug)

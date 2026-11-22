@@ -14,7 +14,6 @@ export default class ConnectSection
         this.resources = _options.resources
         this.objects = _options.objects
         this.areas = _options.areas
-        this.tiles = _options.tiles
         this.debug = _options.debug
         this.x = _options.x
         this.y = _options.y
@@ -25,13 +24,12 @@ export default class ConnectSection
 
         this.setStatic()
         this.setLinks()
-        this.setTiles()
     }
 
     setStatic()
     {
         // Heading made of physical letters (the original baked scenery was person-specific)
-        for(const _letter of wordLetters('CONNECT', { capHeight: 1.2, depth: 0.4, gap: 0.25, material: 'shadeWhite', x: this.x + 4.5, y: this.y + 8 }))
+        for(const _letter of wordLetters('CONNECT', { capHeight: 1.2, depth: 0.4, gap: 0.25, material: 'shadeBlack', x: this.x + 4.5, y: this.y + 8 }))
         {
             this.objects.add({
                 ..._letter,
@@ -116,14 +114,6 @@ export default class ConnectSection
             }
 
             this.links.items.push(item)
-        })
-    }
-
-    setTiles()
-    {
-        this.tiles.add({
-            start: new THREE.Vector2(this.x - 1.2, this.y + 13),
-            delta: new THREE.Vector2(0, - 20)
         })
     }
 }
