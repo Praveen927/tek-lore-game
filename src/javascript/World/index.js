@@ -10,18 +10,16 @@ import Areas from './Areas.js'
 import Tiles from './Tiles.js'
 import Walls from './Walls.js'
 import IntroSection from './Sections/IntroSection.js'
-import ProjectsSection from './Sections/ProjectsSection.js'
+import BoardsSection from './Sections/BoardsSection.js'
 import CrossroadsSection from './Sections/CrossroadsSection.js'
-import InformationSection from './Sections/InformationSection.js'
+import ConnectSection from './Sections/ConnectSection.js'
 import PlaygroundSection from './Sections/PlaygroundSection.js'
-// import DistinctionASection from './Sections/DistinctionASection.js'
-// import DistinctionBSection from './Sections/DistinctionBSection.js'
-// import DistinctionCSection from './Sections/DistinctionCSection.js'
-// import DistinctionDSection from './Sections/DistinctionDSection.js'
 import Controls from './Controls.js'
 import Sounds from './Sounds.js'
 import gsap from 'gsap'
 import EasterEggs from './EasterEggs.js'
+import { products, achievements, testimonials } from '../content/tekion.js'
+import { productCube, trophy, quote } from './Props.js'
 
 export default class World
 {
@@ -416,38 +414,6 @@ export default class World
             debug: this.debugFolder
         }
 
-        // // Distinction A
-        // this.sections.distinctionA = new DistinctionASection({
-        //     ...options,
-        //     x: 0,
-        //     y: - 15
-        // })
-        // this.container.add(this.sections.distinctionA.container)
-
-        // // Distinction B
-        // this.sections.distinctionB = new DistinctionBSection({
-        //     ...options,
-        //     x: 0,
-        //     y: - 15
-        // })
-        // this.container.add(this.sections.distinctionB.container)
-
-        // // Distinction C
-        // this.sections.distinctionC = new DistinctionCSection({
-        //     ...options,
-        //     x: 0,
-        //     y: 0
-        // })
-        // this.container.add(this.sections.distinctionC.container)
-
-        // // Distinction D
-        // this.sections.distinctionD = new DistinctionDSection({
-        //     ...options,
-        //     x: 0,
-        //     y: 0
-        // })
-        // this.container.add(this.sections.distinctionD.container)
-
         // Intro
         this.sections.intro = new IntroSection({
             ...options,
@@ -464,25 +430,46 @@ export default class World
         })
         this.container.add(this.sections.crossroads.container)
 
-        // Projects
-        this.sections.projects = new ProjectsSection({
+        // Products (east of the crossroads)
+        this.sections.products = new BoardsSection({
             ...options,
             x: 30,
-            y: - 30
-            // x: 0,
-            // y: 0
+            y: - 30,
+            items: products,
+            tag: 'Product',
+            prop: productCube
         })
-        this.container.add(this.sections.projects.container)
+        this.container.add(this.sections.products.container)
 
-        // Information
-        this.sections.information = new InformationSection({
+        // Connect
+        this.sections.connect = new ConnectSection({
             ...options,
             x: 1.2,
             y: - 55
-            // x: 0,
-            // y: - 10
         })
-        this.container.add(this.sections.information.container)
+        this.container.add(this.sections.connect.container)
+
+        // Achievements
+        this.sections.achievements = new BoardsSection({
+            ...options,
+            x: 30,
+            y: - 75,
+            items: achievements,
+            tag: 'Achievement',
+            prop: trophy
+        })
+        this.container.add(this.sections.achievements.container)
+
+        // Testimonials
+        this.sections.testimonials = new BoardsSection({
+            ...options,
+            x: 30,
+            y: - 120,
+            items: testimonials,
+            tag: 'Testimonial',
+            prop: quote
+        })
+        this.container.add(this.sections.testimonials.container)
 
         // Playground
         this.sections.playground = new PlaygroundSection({

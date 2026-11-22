@@ -1,4 +1,6 @@
 import * as THREE from 'three'
+import { matcapTexture } from './Theme.js'
+import { colors } from '../content/tekion.js'
 import FloorShadowMaterial from '../Materials/FloorShadow.js'
 import MatcapMaterial from '../Materials/Matcap.js'
 
@@ -43,7 +45,7 @@ export default class Materials
         // Setup
         this.shades = {}
         this.shades.items = {}
-        this.shades.indirectColor = '#d04500'
+        this.shades.indirectColor = colors.shadow
 
         this.shades.uniforms = {
             uRevealProgress: 0,
@@ -65,19 +67,19 @@ export default class Materials
         // Orange
         this.shades.items.orange = new MatcapMaterial()
         this.shades.items.orange.name = 'shadeOrange'
-        this.shades.items.orange.uniforms.matcap.value = this.resources.items.matcapOrangeTexture
+        this.shades.items.orange.uniforms.matcap.value = matcapTexture(colors.accent)
         this.items.orange = this.shades.items.orange
 
         // Green
         this.shades.items.green = new MatcapMaterial()
         this.shades.items.green.name = 'shadeGreen'
-        this.shades.items.green.uniforms.matcap.value = this.resources.items.matcapGreenTexture
+        this.shades.items.green.uniforms.matcap.value = matcapTexture(colors.tree)
         this.items.green = this.shades.items.green
 
         // Brown
         this.shades.items.brown = new MatcapMaterial()
         this.shades.items.brown.name = 'shadeBrown'
-        this.shades.items.brown.uniforms.matcap.value = this.resources.items.matcapBrownTexture
+        this.shades.items.brown.uniforms.matcap.value = matcapTexture(colors.brown)
         this.items.brown = this.shades.items.brown
 
         // Gray
@@ -89,7 +91,7 @@ export default class Materials
         // Beige
         this.shades.items.beige = new MatcapMaterial()
         this.shades.items.beige.name = 'shadeBeige'
-        this.shades.items.beige.uniforms.matcap.value = this.resources.items.matcapBeigeTexture
+        this.shades.items.beige.uniforms.matcap.value = matcapTexture(colors.beige)
         this.items.beige = this.shades.items.beige
 
         // Red
@@ -125,7 +127,7 @@ export default class Materials
         // Yellow
         this.shades.items.yellow = new MatcapMaterial()
         this.shades.items.yellow.name = 'shadeYellow'
-        this.shades.items.yellow.uniforms.matcap.value = this.resources.items.matcapYellowTexture
+        this.shades.items.yellow.uniforms.matcap.value = matcapTexture(colors.tree)
         this.items.yellow = this.shades.items.yellow
 
         // Metal
@@ -181,7 +183,7 @@ export default class Materials
     {
         this.items.floorShadow = new FloorShadowMaterial()
         this.items.floorShadow.depthWrite = false
-        this.items.floorShadow.shadowColor = '#d04500'
+        this.items.floorShadow.shadowColor = colors.shadow
         this.items.floorShadow.uniforms.uShadowColor.value = new THREE.Color(this.items.floorShadow.shadowColor)
         this.items.floorShadow.uniforms.uAlpha.value = 0
 

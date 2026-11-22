@@ -1,4 +1,5 @@
 import * as THREE from 'three'
+import { colors } from '../content/tekion.js'
 import ShadowMaterial from '../Materials/Shadow.js'
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls.js'
 
@@ -17,7 +18,7 @@ export default class Shadows
         this.maxDistance = 3
         this.distancePower = 2
         this.zFightingDistance = 0.001
-        this.color = '#d04500'
+        this.color = colors.shadow
         this.wireframeVisible = false
         this.items = []
 

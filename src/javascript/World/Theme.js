@@ -1,0 +1,22 @@
+import * as THREE from 'three'
+
+// Matcap = a pre-lit sphere image. Generating it from one colour lets the whole world follow the palette in content/tekion.js.
+export function matcapTexture(_hex, _size = 256)
+{
+    const base = new THREE.Color(_hex)
+    const light = base.clone().lerp(new THREE.Color('#ffffff'), 0.45)
+    const dark = base.clone().multiplyScalar(0.55)
+
+    const element = document.createElement('canvas')
+    element.width = element.height = _size
+    const ctx = element.getContext('2d')
+
+    const gradient = ctx.createRadialGradient(_size * 0.38, _size * 0.32, _size * 0.02, _size * 0.5, _size * 0.5, _size * 0.5)
+    gradient.addColorStop(0, `#${light.getHexString()}`)
+    gradient.addColorStop(0.55, `#${base.getHexString()}`)
+    gradient.addColorStop(1, `#${dark.getHexString()}`)
+    ctx.fillStyle = gradient
+    ctx.fillRect(0, 0, _size, _size)
+
+    return new THREE.CanvasTexture(element)
+}

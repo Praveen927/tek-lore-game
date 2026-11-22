@@ -4,7 +4,18 @@ Context for any AI coding agent (Claude, Codex, Cursor, Copilot, Gemini, etc.) w
 
 ## What this is
 
-A 3D, browser-based "drive a car around a world" portfolio game built with Three.js. The repo directory is `tek-lore-game`, but it is a fork of **Bruno Simon's Folio 2019** (`package.json` name: `bruno-simon-folio-2019`). Most content (page title, project list, contact links, Three.js Journey promo, Google Analytics id) is still Bruno's. Treat re-theming as an open task; do not assume the content is final.
+A 3D, browser-based "drive a car around a world" game built with Three.js, converted from **Bruno Simon's Folio 2019** (`package.json` name is still `bruno-simon-folio-2019`) into an interactive explorer for **tekion.com**: visitors drive through a generated world to see Tekion's **products, achievements, testimonials** and **social links**.
+
+## Content and theme (read this first)
+
+- **All copy and links live in `config.json`** at the repo root (git-ignored). `src/javascript/content/tekion.js` loads it (falling back to the committed `config.example.json`) and exports `brand`, `colors`, `social`, `products`, `achievements`, `testimonials`. Sections must not hardcode text or URLs.
+  - Setup on a fresh clone: `cp config.example.json config.json`, then fill in the arrays.
+  - Item shape: `{ id, name, desc, href }`. An empty `social` array means the Connect pads are not rendered.
+- **Never invent Tekion facts, URLs, quotes or brand colours.** The palette in `content/tekion.js` (`colors`) is a neutral *placeholder*; override it from `config.json` `"colors"` once real brand colours are confirmed (`primary, accent, surface, text, tree, glow, floor{topLeft,topRight,bottomRight,bottomLeft}`).
+- **No Blender.** Text and scenery that used to be baked into GLB/PNG files is generated in code (see Layout: `Words.js`, `Labels.js`, `Signpost.js`, `Props.js`, `Theme.js`). Do not edit `resources/3d/*`.
+- Remove resources from `Resources.js` and their consumers in the same commit. Update this file when structure changes.
+
+World layout (x, y): Intro (0,0) -> Crossroads (0,-30) -> Products row east (30,-30), Connect south (1.2,-55), Achievements row (30,-75), Testimonials row (30,-120), Playground west (-38,-34), Konami easter egg (-60,-100).
 
 There are no tests, no linter, no TypeScript, no CI config. Plain ES modules.
 
@@ -24,20 +35,20 @@ Debug mode: open the app with `#debug` in the URL. This creates a `dat.GUI` pane
 - `vite-plugin-glsl`: `.glsl` files are imported as strings (`#include` works, see `src/shaders/partials/`)
 - `vite-plugin-restart`: restarts the dev server when `static/**` changes
 - three 0.164, cannon 0.6 (physics), gsap 3 (tweens), howler 2 (audio), dat.gui (debug)
-- Fonts load from Google Fonts (Comic Neue); analytics snippet is in `src/index.html`
+- Fonts load from Google Fonts (Comic Neue). 3D text uses three's bundled `helvetiker_bold` typeface.
 
 ## Layout
 
 ```
 src/
-  index.html            canvas (.js-canvas) + Three.js Journey promo DOM
+  index.html            canvas (.js-canvas)
   index.js              creates `window.application = new Application(...)`
   style/main.css
   javascript/
     Application.js      composition root: Time, Sizes, Resources, config, renderer, Camera, post passes, World
     Camera.js           angle, zoom, pan (follows car), orbit controls (debug)
     Resources.js        THE manifest of every asset to load (see below)
-    ThreejsJourney.js   promo popup, uses localStorage
+    content/tekion.js   loads config.json; the single source of copy, links and palette
     Utils/              EventEmitter, Loader, Sizes, Time
     Passes/             Blur, Glows (post-processing ShaderPass definitions)
     Materials/          ShaderMaterial wrappers (Matcap, Floor, Shadow, AreaFence, ...)
@@ -51,7 +62,12 @@ src/
       Zones.js / Zone.js        invisible trigger regions
       Tiles.js, Walls.js, Floor.js, Shadows.js, Materials.js
       Sounds.js         howler wrapper + engine sound
-      EasterEggs.js     Konami code, wigs, etc.
+      EasterEggs.js     Konami code
+      Words.js          3D text: wordLetters() (physical letters), wordGeometry() (merged, for signs)
+      Labels.js         canvas textures: alphaLabel() (floor/area labels), card() (board cards)
+      Props.js          procedural physical props: trophy(), quote(), productCube()
+      Signpost.js       generated signposts
+      Theme.js          matcapTexture(hex): matcaps generated from palette colours
       Sections/         one class per themed area of the world (see below)
   shaders/<name>/{vertex,fragment}.glsl + partials/
 static/                 served as-is at "/": models/*.glb, textures, sounds/, draco/, favicon/
@@ -73,20 +89,21 @@ resources/3d/           Blender sources (.blend) - not shipped, large binaries
 
 ## Common tasks
 
-**Add or edit a project board** (`World/Sections/ProjectsSection.js`): add an entry to the list in `setList()` (`name`, `imageSources`, `floorTexture`, `link {href,x,y,halfExtents}`, optional `distinctions`). Register its floor texture in `Resources.js` and put images under `static/models/projects/<name>/`. Some project folders in `static/` are present but their entries are commented out in the manifest.
+**Add or edit a product / achievement / testimonial**: edit the matching array in `config.json` (no code change). Boards are laid out by `World/Sections/BoardsSection.js` (one board, floor label, prop and link area per item, 16 units apart along +x). Rows are instantiated in `World.setSections()` with their `x, y`, `tag` and `prop`.
 
-**Add a new world section**: create `World/Sections/FooSection.js` (receive `time, resources, objects, areas, zones, tiles, debug, x, y`; expose `this.container` as an `Object3D`), load its assets in `Resources.js`, then instantiate and `this.container.add(...)` it in `World.setSections()`. The `DistinctionA..D` sections are disabled (imports and instantiation commented out).
+**Add a new world section**: create `World/Sections/FooSection.js` (receive `time, resources, objects, areas, zones, tiles, debug, x, y`; expose `this.container` as an `Object3D`), then instantiate and `this.container.add(...)` it in `World.setSections()`. For a new board row just add another `BoardsSection`. Generated objects pass `{ base: { children: [...] }, collision: { children: [...] } }` to `objects.add()`; visual meshes are named `shadeXxx` (matcap lookup), collision meshes `cube`/`cylinder` with the size in `scale`.
 
 **Add a physical object**: add `base`/`collision` GLBs to `static/models/<name>/`, register both in `Resources.js`, create it via `objects.add(...)`. If it makes sound, add a settings block in `World/Sounds.js` `setSettings()` and files under `static/sounds/`.
 
 **Add a shader**: create `src/shaders/<name>/{vertex,fragment}.glsl`, wrap in `Materials/<Name>.js` or `Passes/<Name>.js`. Reuse chunks via `#include ../partials/<file>.glsl`.
 
-**Change content/branding**: `src/index.html` (title, meta, analytics id, promo copy), `IntroSection.js` (titles), `InformationSection.js` (contact/activities), `Application.setTitle` (animated tab title), `ThreejsJourney.js` + its DOM, favicons in `src/favicon` and `static/favicon`, social images in `static/social`.
+**Change content/branding**: copy and palette in `config.json`; `src/index.html` (title, meta), `IntroSection.js` (title letters come from `brand.name`), `CrossroadsSection.js` (signposts), `ConnectSection.js`, `Application.setTitle` (animated tab title), favicons in `src/favicon` and `static/favicon` (still the original author's artwork: replace with Tekion's), social images in `static/social`.
 
 ## Gotchas
 
 - `Application.destructor()` is incomplete and calls `this.debug.destroy()` unguarded (throws when debug is off). Nothing calls it today.
-- `index.html` also contains a Google Analytics snippet (`UA-3966601-5`, legacy Universal Analytics) that belongs to the original author; remove or replace it for any real deploy.
+- The original Google Analytics snippet was removed; add the real tracking id only when the owner provides one.
+- Favicons and share images in `static/` are still the original author's.
 - `static/.htaccess` exists for Apache hosting; irrelevant for Vite dev.
 - `static/draco/` holds Draco decoders used by the GLTF loader; do not delete.
 - Assets are large and binary. Do not read `.glb`/`.blend` files as text and avoid committing regenerated binaries unnecessarily.
