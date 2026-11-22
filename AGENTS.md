@@ -6,6 +6,22 @@ Context for any AI coding agent (Claude, Codex, Cursor, Copilot, Gemini, etc.) w
 
 A 3D, browser-based "drive a car around a world" portfolio game built with Three.js. The repo directory is `tek-lore-game`, but it is a fork of **Bruno Simon's Folio 2019** (`package.json` name: `bruno-simon-folio-2019`). Most content (page title, project list, contact links, Three.js Journey promo, Google Analytics id) is still Bruno's. Treat re-theming as an open task; do not assume the content is final.
 
+## Project direction (read this first)
+
+This fork is being converted into an interactive explorer for **tekion.com** (a SaaS company, not a person): visitors drive a car through a 3D world to explore Tekion's **products, achievements, testimonials, about, and social/contact**. Same engine and interaction model; new components, colours and content. Everything specific to an individual (Bruno's projects, career, socials, promo, analytics) is to be removed or remapped.
+
+- **Full plan:** [docs/plan-tekion-conversion.md](docs/plan-tekion-conversion.md). It has 10 phases (0 baseline, 1 strip, 2 content layer, 3 branding shell, 4 code-generated text/labels, 5 remap sections, 6 visual identity, 7 new Achievements/Testimonials sections, 8 easter eggs/sounds, 9 QA/release), open decisions D1-D10, the definition of done, and risks.
+- **Target world:** Intro (TEKION) -> Crossroads -> Products (reuses the project-board mechanic), Connect/About (replaces Information), Playground (kept, re-skinned), plus new Achievements and Testimonials.
+- **Roles:** a planning agent maintains `docs/` and does not edit code; a coding agent implements the plan phase by phase, one commit per phase.
+- **Rules for the coding agent:**
+  - Never invent Tekion facts, URLs, quotes, or brand colours. If a plan input (D1-D10) is missing, ask the user.
+  - All copy and links live in one data file, `src/javascript/content/tekion.js` (created in Phase 2). Sections must not hardcode text or URLs.
+  - Only real, confirmed social links are rendered; an empty list means the block is not rendered.
+  - Do not touch `resources/3d/*`. Assume no Blender: generate text/labels in code (Phase 4).
+  - Remove resources from `Resources.js` and their consumers in the same commit.
+  - When structure changes (new/renamed files or classes), update this file in the same commit.
+- **Status:** Phase 0 not started (update this line as phases complete). Sections described below still reflect the original Bruno code until the matching phase lands.
+
 There are no tests, no linter, no TypeScript, no CI config. Plain ES modules.
 
 ## Commands
