@@ -20,7 +20,8 @@ This fork is being converted into an interactive explorer for **tekion.com** (a 
   - Do not touch `resources/3d/*`. Assume no Blender: generate text/labels in code (Phase 4).
   - Remove resources from `Resources.js` and their consumers in the same commit.
   - When structure changes (new/renamed files or classes), update this file in the same commit.
-- **Status:** Phase 0 not started (update this line as phases complete). Sections described below still reflect the original Bruno code until the matching phase lands.
+- **Fix-up pending:** [docs/phase-1-fixup.md](docs/phase-1-fixup.md) lists what is broken after commit `080110a`. Do it before Phase 3+. `config.json` stays gitignored (copy it from `config.example.json`).
+- **Status:** Phase 1 mostly done, Phase 2 partly done; see the fix-up checklist (update this line as phases complete). Sections described below still reflect the original Bruno code until the matching phase lands.
 
 There are no tests, no linter, no TypeScript, no CI config. Plain ES modules.
 
