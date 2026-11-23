@@ -1,6 +1,6 @@
 {
-    "name": "Bruno Simon",
-    "short_name": "Bruno Simon",
+    "name": "Tekion",
+    "short_name": "Tekion",
     "icons": [
         {
             "src": "/favicon/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
             "type": "image/png"
         }
     ],
-    "theme_color": "#ffffff",
+    "theme_color": "#00C3B4",
     "background_color": "#ffffff",
     "display": "standalone"
 }

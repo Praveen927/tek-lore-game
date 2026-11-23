@@ -15,8 +15,8 @@ function getPulseTexture()
         element.height = 4
         const ctx = element.getContext('2d')
         const gradient = ctx.createLinearGradient(0, 0, 128, 0)
-        gradient.addColorStop(0, 'rgba(90,200,255,0)')
-        gradient.addColorStop(0.8, 'rgba(60,170,255,0.9)')
+        gradient.addColorStop(0, 'rgba(0,203,247,0)')
+        gradient.addColorStop(0.8, 'rgba(0,203,247,0.9)')
         gradient.addColorStop(1, 'rgba(255,255,255,1)')
         ctx.fillStyle = gradient
         ctx.fillRect(0, 0, 128, 4)

@@ -3,7 +3,8 @@ import gsap from 'gsap'
 
 import Links from '../Links.js'
 import { buildingTypes, serverFarm } from '../Buildings.js'
-import { alphaLabel, card, codeWindow, glassTag, imageCard } from '../Labels.js'
+import { alphaLabel, card, codeWindow, glassTag, imageCard, logoPanel } from '../Labels.js'
+import logoUrl from '../../../images/brand/tekion-logo.svg'
 import { products, hubCards, colors } from '../../content/tekion.js'
 
 // The campus from the reference: a glass server farm in the middle, one building per product around it,
@@ -30,6 +31,7 @@ export default class CampusSection
 
         this.displays = []
         this.focused = false
+        this.destinations = []
 
         this.setHub()
         this.setBuildings()
@@ -74,7 +76,20 @@ export default class CampusSection
         code.position.set(this.x + 6.5, this.y + depth * 0.5 + 1.5, 5)
         this.container.add(code)
 
+        // Brand logo floating above the cards
+        const logo = new THREE.Mesh(new THREE.PlaneGeometry(9, 9 * 400 / 1280), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, visible: false }))
+        logo.rotation.x = Math.PI * 0.5
+        logo.position.set(this.x, this.y + depth * 0.5 + 1.5, 9.6)
+        this.container.add(logo)
+        logoPanel(logoUrl).then((_texture) =>
+        {
+            logo.material.map = _texture
+            logo.material.visible = true
+            logo.material.needsUpdate = true
+        }).catch(() => {})
+
         this.hub = new THREE.Vector2(this.x, this.y)
+        this.destinations.push({ group: 'Explore', label: 'Server farm', x: this.x, y: this.y - 13 })
     }
 
     setBuildings()
@@ -105,7 +120,7 @@ export default class CampusSection
             this.links.add(this.hub, door)
 
             // Name on the floor + link area in front of the door
-            const label = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.5), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, color: new THREE.Color(colors.accent), alphaMap: alphaLabel(_product.name) }))
+            const label = new THREE.Mesh(new THREE.PlaneGeometry(10, 2.5), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, color: new THREE.Color(colors.primary), alphaMap: alphaLabel(_product.name) }))
             label.position.set(x, y - building.depth * 0.5 - 4.6, 0.1)
             this.container.add(label)
 
@@ -148,6 +163,7 @@ export default class CampusSection
 
             // Distance is measured to the entrance (the OPEN pad), where the car actually goes
             this.displays.push({ mesh: display, x, y: y - building.depth * 0.5 - 7.6, roof: building.height + 0.4 })
+            this.destinations.push({ group: 'Products', label: _product.name, x, y: y - building.depth * 0.5 - 7.6 })
         })
     }
 

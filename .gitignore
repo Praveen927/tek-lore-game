@@ -148,3 +148,6 @@ tags
 config.json
 
 .claude
+
+# Product pictures (large, supplied locally)
+src/images/products/

@@ -16,6 +16,7 @@ import gsap from 'gsap'
 import EasterEggs from './EasterEggs.js'
 import CampusSection from './Sections/CampusSection.js'
 import Links from './Links.js'
+import Menu from './Menu.js'
 import { products, achievements, testimonials } from '../content/tekion.js'
 
 export default class World
@@ -433,6 +434,16 @@ export default class World
             tag: 'Testimonial'
         })
         this.container.add(this.sections.testimonials.container)
+
+        // Fast-travel menu
+        const destinations = [
+            { group: 'Explore', label: 'Start', x: 0, y: 6 },
+            ...this.sections.campus.destinations,
+            ...(this.sections.achievements.destination ? [{ group: 'Explore', label: 'Achievements', ...this.sections.achievements.destination }] : []),
+            ...(this.sections.testimonials.destination ? [{ group: 'Explore', label: 'Testimonials', ...this.sections.testimonials.destination }] : []),
+            ...(this.sections.connect.destination ? [{ group: 'Explore', label: 'Connect', ...this.sections.connect.destination }] : [])
+        ]
+        this.menu = new Menu({ destinations, car: this.car, physics: this.physics, time: this.time })
 
         // Roads between the areas
         const roads = new Links({ time: this.time, container: this.container })

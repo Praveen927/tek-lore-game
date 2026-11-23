@@ -90,7 +90,7 @@ export function card({ tag = '', title = '', body = '', index = 0, total = 0, co
     ctx.textAlign = 'left'
 
     // Tag
-    ctx.fillStyle = colors.accent
+    ctx.fillStyle = colors.text
     ctx.font = `700 40px ${FONT}`
     ctx.fillText(tag.toUpperCase(), pad, 56)
 
@@ -134,7 +134,7 @@ export function card({ tag = '', title = '', body = '', index = 0, total = 0, co
     if(total)
     {
         ctx.textAlign = 'right'
-        ctx.fillStyle = colors.accent
+        ctx.fillStyle = colors.text
         ctx.font = `700 30px ${FONT}`
         ctx.fillText(`${index + 1} / ${total}`, width - pad, height - 58)
     }
@@ -263,6 +263,41 @@ export function imageCard(_url, { width = 1280, radius = 44, border = 16, frame 
             texture.colorSpace = THREE.SRGBColorSpace
             texture.anisotropy = 4
             _resolve({ texture, aspect })
+        }
+        image.onerror = _reject
+        image.src = _url
+    })
+}
+
+/**
+ * Brand logo on a frosted panel (floating over the server farm). Resolves with the texture.
+ */
+export function logoPanel(_url, { width = 1280, height = 400 } = {})
+{
+    return new Promise((_resolve, _reject) =>
+    {
+        const image = new Image()
+        image.onload = () =>
+        {
+            const element = canvas(width, height)
+            const ctx = element.getContext('2d')
+
+            ctx.beginPath()
+            ctx.roundRect(4, 4, width - 8, height - 8, 70)
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.92)'
+            ctx.fill()
+            ctx.lineWidth = 3
+            ctx.strokeStyle = 'rgba(190, 200, 225, 0.9)'
+            ctx.stroke()
+
+            const logoWidth = width * 0.68
+            const logoHeight = logoWidth * image.naturalHeight / image.naturalWidth
+            ctx.drawImage(image, (width - logoWidth) / 2, (height - logoHeight) / 2, logoWidth, logoHeight)
+
+            const texture = new THREE.CanvasTexture(element)
+            texture.colorSpace = THREE.SRGBColorSpace
+            texture.anisotropy = 4
+            _resolve(texture)
         }
         image.onerror = _reject
         image.src = _url

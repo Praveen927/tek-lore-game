@@ -114,6 +114,7 @@ export default class ConnectSection
             }
 
             this.links.items.push(item)
+            this.destination = this.destination || { x: item.x, y: item.y }
         })
     }
 }

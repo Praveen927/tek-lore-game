@@ -11,7 +11,7 @@ A 3D, browser-based "drive a car around a world" game built with Three.js, conve
 - **All copy and links live in `config.json`** at the repo root (git-ignored). `src/javascript/content/tekion.js` loads it (falling back to the committed `config.example.json`) and exports `brand`, `colors`, `social`, `products`, `achievements`, `testimonials`. Sections must not hardcode text or URLs.
   - Setup on a fresh clone: `cp config.example.json config.json`, then fill in the arrays.
   - Item shape: `{ id, name, desc, href }`. An empty `social` array means the Connect pads are not rendered.
-- **Never invent Tekion facts, URLs, quotes or brand colours.** The palette in `content/tekion.js` (`colors`) is a neutral *placeholder*; override it from `config.json` `"colors"` once real brand colours are confirmed (`primary, title, accent, surface, text, glow, shadow, car, floor{topLeft,topRight,bottomRight,bottomLeft}, shades{...}`).
+- **Never invent Tekion facts, URLs, quotes or brand colours.** The brand colours in `content/tekion.js` (`colors`) are Tekion's own design tokens read from tekion.com (teal `#00C3B4`, text `#222630`, sky `#00CBF7`); the floor and glass tones follow the campus reference image. Override any of them from `config.json` `"colors"` (`primary, title, accent, surface, text, glow, shadow, car, floor{topLeft,topRight,bottomRight,bottomLeft}, shades{...}`).
 - **No Blender.** Text and scenery that used to be baked into GLB/PNG files is generated in code (see Layout: `Buildings.js`, `Words.js`, `Labels.js`, `Links.js`, `Theme.js`). Do not edit `resources/3d/*`.
 - Remove resources from `Resources.js` and their consumers in the same commit. Update this file when structure changes.
 
@@ -69,6 +69,7 @@ src/
       Links.js          roads: thin white lines with pulses
       Words.js          3D text: wordLetters() (physical letters), wordGeometry() (merged, for signs)
       Labels.js         canvas textures: alphaLabel() (floor/area labels), card() (board cards)
+      Menu.js           fast-travel menu ("Where to?"): DOM list of destinations that moves the car; sections expose `destinations`/`destination`
       Theme.js          matcapTexture(hex): matcaps generated from palette colours
       Sections/         one class per themed area of the world (see below)
   shaders/<name>/{vertex,fragment}.glsl + partials/
@@ -91,7 +92,7 @@ resources/3d/           Blender sources (.blend) - not shipped, large binaries
 
 ## Common tasks
 
-**Product pictures**: drop `<name>.png|jpg|webp` into `src/images/products/`. A product picks it up automatically when the file name matches the product name (`crm.png` -> "Tekion CRM", `tekion_pay.png` -> "Tekion Pay"), or set `"image": "file.png"` on the product in `config.json`. The picture floats above the building only while the car is nearest to that building's entrance; products without a picture show the banner card the same way.
+**Product pictures**: put full-size originals in `src/images/products/originals/` and run `npm run images` (sharp, `tools/optimiseImages.mjs`) to write 1280 px WebP files into `src/images/products/`; only those are bundled. The whole folder is git-ignored. A product picks it up automatically when the file name matches the product name (`crm.png` -> "Tekion CRM", `tekion_pay.png` -> "Tekion Pay"), or set `"image": "file.png"` on the product in `config.json`. The picture floats above the building only while the car is nearest to that building's entrance; products without a picture show the banner card the same way.
 
 **Add or edit a product / achievement / testimonial**: edit the matching array in `config.json` (no code change). Products become buildings in `World/Sections/CampusSection.js` (types cycle through `Buildings.js`); achievements and testimonials are board rows from `World/Sections/BoardsSection.js` (one board, floor label and link area per item, 10 units apart along +x), instantiated in `World.setSections()`.
 
@@ -101,13 +102,13 @@ resources/3d/           Blender sources (.blend) - not shipped, large binaries
 
 **Add a shader**: create `src/shaders/<name>/{vertex,fragment}.glsl`, wrap in `Materials/<Name>.js` or `Passes/<Name>.js`. Reuse chunks via `#include ../partials/<file>.glsl`.
 
-**Change content/branding**: copy and palette in `config.json`; `src/index.html` (title, meta), `IntroSection.js` (title letters come from `brand.name`), `CampusSection.js` (hub + product buildings), `ConnectSection.js`, `Application.setTitle` (animated tab title), favicons in `src/favicon` and `static/favicon` (still the original author's artwork: replace with Tekion's), social images in `static/social`.
+**Change content/branding**: copy and palette in `config.json`; `src/index.html` (title, meta), `IntroSection.js` (title letters come from `brand.name`), `CampusSection.js` (hub + product buildings), `ConnectSection.js`, `Application.setTitle` (animated tab title), favicons in `static/favicon` (generated from Tekion's site icon), share images in `static/social` (screenshots of the campus; og/twitter image URLs in `index.html` are relative: make them absolute once the production domain is known).
 
 ## Gotchas
 
 - `Application.destructor()` is incomplete and calls `this.debug.destroy()` unguarded (throws when debug is off). Nothing calls it today.
 - The original Google Analytics snippet was removed; add the real tracking id only when the owner provides one.
-- Favicons and share images in `static/` are still the original author's.
+- `bruno-simon` mentions that remain are intentional: `license.md` (the MIT notice must stay) and the attribution line in `readme.md`.
 - `static/.htaccess` exists for Apache hosting; irrelevant for Vite dev.
 - `static/draco/` holds Draco decoders used by the GLTF loader; do not delete.
 - Assets are large and binary. Do not read `.glb`/`.blend` files as text and avoid committing regenerated binaries unnecessarily.

@@ -29,7 +29,7 @@ export default class BoardsSection
         this.items = _options.items
         this.tag = _options.tag
         this.interDistance = _options.interDistance || 9
-        this.accent = _options.accent || colors.accent
+        this.accent = _options.accent || colors.primary
 
         // Set up
         this.container = new THREE.Object3D()
@@ -46,6 +46,7 @@ export default class BoardsSection
         this.boards = []
         this.items.forEach((_item, _index) => this.add(_item, _index))
 
+        this.destination = { x: this.boards[0].x, y: this.boards[0].y - 3 }
         this.setRoad()
         this.setZone()
     }

@@ -3,13 +3,16 @@
 const files = import.meta.glob('../../../config{,.example}.json', { eager: true, import: 'default' })
 const config = files['../../../config.json'] || files['../../../config.example.json'] || {}
 
-// Palette: neutral defaults until real brand colours are confirmed. Override via config.json "colors".
+// Palette. Brand values come from Tekion's own design tokens (tekion.com stylesheet): teal-500 #00C3B4 is the primary
+// background colour, #222630 is the text/button colour, #00CBF7 starts their "sky" gradient. The floor and glass tones
+// follow the campus reference image. Override anything via config.json "colors".
 export const colors = {
-    primary: '#2c3550',
+    primary: '#222630',
     title: '#00C3B4', // intro TEKION letters
-    accent: '#2f6bff',
+    accent: '#00C3B4',
+    sky: '#00CBF7', // road pulses
     surface: '#ffffff',
-    text: '#1b1f2a',
+    text: '#222630',
     shadow: '#8d99b8',
     glow: '#eef2ff',
     car: '#c9c8c2',
@@ -19,7 +22,7 @@ export const colors = {
         white: '#f4f6fb',
         gray: '#b4bccd',
         blue: '#a9c8ee',
-        black: '#3a4052',
+        black: '#222630',
         brown: '#b9a995',
         beige: '#e7e3da',
         emeraldGreen: '#4cc79a',

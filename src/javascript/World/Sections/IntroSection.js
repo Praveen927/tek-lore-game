@@ -99,7 +99,7 @@ export default class IntroSection
     {
         // Title: one physical object per letter, generated from the brand name
         const title = wordLetters(brand.name.toUpperCase(), { capHeight: 1.6, depth: 0.5, gap: 0.3, material: 'shadeTitle', x: 0.3, y: - 9.5 })
-        const subtitle = wordLetters('DRIVE TO EXPLORE', { capHeight: 0.6, depth: 0.3, gap: 0.14, material: 'shadeOrange', x: 0.3, y: - 12 })
+        const subtitle = wordLetters('DRIVE TO EXPLORE', { capHeight: 0.6, depth: 0.3, gap: 0.14, material: 'shadeBlack', x: 0.3, y: - 12 })
 
         for(const _letter of [...title, ...subtitle])
         {
