@@ -303,3 +303,62 @@ export function logoPanel(_url, { width = 1280, height = 400 } = {})
         image.src = _url
     })
 }
+
+/**
+ * Picture for a board plane: cover-fitted onto the same canvas size as card(), so the board needs no other change.
+ */
+export function boardImage(_url, { width = 1100, height = 640 } = {})
+{
+    return new Promise((_resolve, _reject) =>
+    {
+        const image = new Image()
+        image.onload = () =>
+        {
+            const element = canvas(width, height)
+            const ctx = element.getContext('2d')
+
+            const scale = Math.max(width / image.naturalWidth, height / image.naturalHeight)
+            const w = image.naturalWidth * scale
+            const h = image.naturalHeight * scale
+            ctx.drawImage(image, (width - w) / 2, (height - h) / 2, w, h)
+
+            const texture = new THREE.CanvasTexture(element)
+            texture.colorSpace = THREE.SRGBColorSpace
+            texture.anisotropy = 4
+            _resolve(texture)
+        }
+        image.onerror = _reject
+        image.src = _url
+    })
+}
+
+/**
+ * Wrapped, centred paragraph (white on black, for an alphaMap): the description on the floor below a name.
+ */
+export function alphaParagraph(_text, { width = 1400, height = 440, size = 54, weight = 600 } = {})
+{
+    const element = canvas(width, height)
+    const ctx = element.getContext('2d')
+
+    ctx.fillStyle = '#000'
+    ctx.fillRect(0, 0, width, height)
+    ctx.fillStyle = '#fff'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'top'
+    ctx.font = `${weight} ${size}px ${FONT}`
+
+    const lineHeight = size * 1.28
+    const maxLines = Math.floor(height / lineHeight)
+    const lines = wrap(ctx, _text, width * 0.94)
+    const shown = lines.slice(0, maxLines)
+    if(lines.length > maxLines)
+    {
+        shown[maxLines - 1] = shown[maxLines - 1].replace(/[\s.,;:]*$/, '') + '…'
+    }
+
+    shown.forEach((_line, _index) => ctx.fillText(_line, width / 2, _index * lineHeight))
+
+    const texture = new THREE.CanvasTexture(element)
+    texture.minFilter = THREE.LinearFilter
+    return texture
+}

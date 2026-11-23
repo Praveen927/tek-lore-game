@@ -97,19 +97,20 @@ export default class IntroSection
 
     setTitles()
     {
-        // Title: one physical object per letter, generated from the brand name
-        const title = wordLetters(brand.name.toUpperCase(), { capHeight: 1.6, depth: 0.5, gap: 0.3, material: 'shadeTitle', x: 0.3, y: - 9.5 })
-        const subtitle = wordLetters('DRIVE TO EXPLORE', { capHeight: 0.6, depth: 0.3, gap: 0.14, material: 'shadeBlack', x: 0.3, y: - 12 })
+        // Title: one object per letter, generated from the brand name. Static (cannot be knocked over), placed behind the
+        // start (towards the camera) so it is in the first view while the road to the campus leads away from it.
+        const titleY = - 10
+        const subtitleY = - 12.6
+        const title = wordLetters(brand.name.toUpperCase(), { capHeight: 1.6, depth: 0.5, gap: 0.3, material: 'shadeTitle', x: 0.3, y: titleY })
+        const subtitle = wordLetters('DRIVE TO EXPLORE', { capHeight: 0.6, depth: 0.3, gap: 0.14, material: 'shadeBlack', x: 0.3, y: subtitleY })
 
         for(const _letter of [...title, ...subtitle])
         {
-            const small = _letter.offset.y === - 12
             this.objects.add({
                 ..._letter,
                 rotation: new THREE.Euler(0, 0, 0),
-                shadow: { sizeX: _letter.width * 1.5, sizeY: small ? 1 : 1.8, offsetZ: - 0.4, alpha: 0.4 },
-                mass: small ? 0.6 : 1.5,
-                soundName: 'brick'
+                shadow: { sizeX: _letter.width * 1.5, sizeY: _letter.offset.y === subtitleY ? 1 : 1.8, offsetZ: - 0.4, alpha: 0.4 },
+                mass: 0
             })
         }
     }

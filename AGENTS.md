@@ -15,7 +15,7 @@ A 3D, browser-based "drive a car around a world" game built with Three.js, conve
 - **No Blender.** Text and scenery that used to be baked into GLB/PNG files is generated in code (see Layout: `Buildings.js`, `Words.js`, `Labels.js`, `Links.js`, `Theme.js`). Do not edit `resources/3d/*`.
 - Remove resources from `Resources.js` and their consumers in the same commit. Update this file when structure changes.
 
-World layout (x, y): Intro (0,0), Connect (34,-8), Campus hub (0,-46) with one building per product on an ellipse (rx 34, ry 24) around it, Achievements board row (y -95) and Testimonials board row (y -118), both centred on x = 0 with a gap for the road, Konami easter egg (-60,-100). Roads are drawn by `World/Links.js`.
+World layout (x, y): the journey runs away from the camera (+y) and the car starts facing +y. Start / Intro (0,0) with the static title behind it at y -10, Campus hub (0,46) with one building per product on an ellipse (rx 34, ry 24) around it, Achievements board row (y 82), Testimonials board row (y 105), Connect last (y 122); rows and Connect are centred on x = 0 with a gap for the road. Konami easter egg (-60,-100). Roads are drawn by `World/Links.js`.
 
 **Visual target:** a light, cool "campus" like the design reference (pale floor, white buildings with pale-blue glass, translucent glass server farm with racks, thin white roads with travelling light-blue pulses). Colours live in `colors` in `content/tekion.js`.
 
@@ -93,7 +93,7 @@ resources/3d/           Blender sources (.blend) - not shipped, large binaries
 
 ## Common tasks
 
-**Product pictures**: put full-size originals in `src/images/products/originals/` and run `npm run images` (sharp, `tools/optimiseImages.mjs`) to write 1280 px WebP files into `src/images/products/`; only those are bundled. The whole folder is git-ignored. A product picks it up automatically when the file name matches the product name (`crm.png` -> "Tekion CRM", `tekion_pay.png` -> "Tekion Pay"), or set `"image": "file.png"` on the product in `config.json`. The picture floats above the building only while the car is nearest to that building's entrance; products without a picture show the banner card the same way.
+**Pictures (products, achievements, testimonials)**: put full-size originals in `src/images/products/originals/` and run `npm run images` (sharp, `tools/optimiseImages.mjs`) to write 1280 px WebP files into `src/images/products/`; only those are bundled, and the whole folder is git-ignored. An item gets its picture from, in order: `"image": "file.webp"` in `config.json`, a file named after its id (`achievement-1.webp`, `testimonial-3.webp`), or a file named after its name (`crm.webp` -> "Tekion CRM"). Products show it floating above their building only while the car is nearest to that building's entrance (banner card when there is no picture). On achievement/testimonial boards the picture replaces the banner text and the description is printed on the floor under the name; items without a picture keep the text card.
 
 **Add or edit a product / achievement / testimonial**: edit the matching array in `config.json` (no code change). Products become buildings in `World/Sections/CampusSection.js` (types cycle through `Buildings.js`); achievements and testimonials are board rows from `World/Sections/BoardsSection.js` (one board, floor label and link area per item, 10 units apart along +x), instantiated in `World.setSections()`.
 

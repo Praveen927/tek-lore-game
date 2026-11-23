@@ -55,8 +55,9 @@ export const hubCards = config.hubCards || [
 ];
 
 export const social = config.social || [];
-// Product images: src/images/products/<name>.(png|jpg|webp). A product uses `image` (a file name) from config.json,
-// or else the file whose name matches the product name (crm.png -> "Tekion CRM", tekion_pay.png -> "Tekion Pay").
+// Pictures: src/images/products/<name>.(png|jpg|webp), run `npm run images` to make the WebP files. An item uses `image`
+// (a file name) from config.json, or else the file named after its id (achievement-1.webp), or after its name
+// (crm.webp -> "Tekion CRM", tekion_pay.webp -> "Tekion Pay").
 const imageFiles = import.meta.glob(
   "../../images/products/*.{png,jpg,jpeg,webp}",
   { eager: true, query: "?url", import: "default" },
@@ -71,20 +72,25 @@ for (const _path in imageFiles) {
   imageByName[normalise(_path.split("/").pop())] = imageFiles[_path];
 }
 
-const findImage = (_product) => {
-  if (_product.image) {
-    return imageByName[normalise(_product.image)] || null;
+const findImage = (_item) => {
+  if (_item.image) {
+    return imageByName[normalise(_item.image)] || null;
   }
-  const name = normalise(_product.name);
-  return imageByName[name] || imageByName[name.replace(/^tekion/, "")] || null;
+  const name = normalise(_item.name);
+  return (
+    imageByName[normalise(_item.id || "")] ||
+    imageByName[name] ||
+    imageByName[name.replace(/^tekion/, "")] ||
+    null
+  );
 };
 
-export const products = (config.products || []).map((_product) => ({
-  ..._product,
-  image: findImage(_product),
-}));
-export const achievements = config.achievements || [];
-export const testimonials = config.testimonials || [];
+const withImages = (_list) =>
+  (_list || []).map((_item) => ({ ..._item, image: findImage(_item) }));
+
+export const products = withImages(config.products);
+export const achievements = withImages(config.achievements);
+export const testimonials = withImages(config.testimonials);
 
 export default {
   brand,
