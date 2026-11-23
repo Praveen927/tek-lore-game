@@ -11,7 +11,7 @@ A 3D, browser-based "drive a car around a world" game built with Three.js, conve
 - **All copy and links live in `config.json`** at the repo root (git-ignored). `src/javascript/content/tekion.js` loads it (falling back to the committed `config.example.json`) and exports `brand`, `colors`, `social`, `products`, `achievements`, `testimonials`. Sections must not hardcode text or URLs.
   - Setup on a fresh clone: `cp config.example.json config.json`, then fill in the arrays.
   - Item shape: `{ id, name, desc, href }`. An empty `social` array means the Connect pads are not rendered.
-- **Never invent Tekion facts, URLs, quotes or brand colours.** The brand colours in `content/tekion.js` (`colors`) are Tekion's own design tokens read from tekion.com (teal `#00C3B4`, text `#222630`, sky `#00CBF7`); the floor and glass tones follow the campus reference image. Override any of them from `config.json` `"colors"` (`primary, title, accent, surface, text, glow, shadow, car, floor{topLeft,topRight,bottomRight,bottomLeft}, shades{...}`).
+- **Never invent Tekion facts, URLs, quotes or brand colours.** The brand colours in `content/tekion.js` (`colors`) are Tekion's own design tokens read from tekion.com (teal `#00C3B4`, text `#222630`, sky `#00CBF7`); the floor and glass tones follow the campus reference image. Override any of them from `config.json` `"colors"` (`primary, title, accent, social, sky, surface, text, glow, shadow, car, floor{topLeft,topRight,bottomRight,bottomLeft}, shades{...}`).
 - **No Blender.** Text and scenery that used to be baked into GLB/PNG files is generated in code (see Layout: `Buildings.js`, `Words.js`, `Labels.js`, `Links.js`, `Theme.js`). Do not edit `resources/3d/*`.
 - Remove resources from `Resources.js` and their consumers in the same commit. Update this file when structure changes.
 
@@ -69,6 +69,7 @@ src/
       Links.js          roads: thin white lines with pulses
       Words.js          3D text: wordLetters() (physical letters), wordGeometry() (merged, for signs)
       Labels.js         canvas textures: alphaLabel() (floor/area labels), card() (board cards)
+      Icons.js          iconFor(name): social icons extruded from SVGs in src/images/social/ (youtube, linkedin, instagram, email/mail); unknown names fall back to the first letter
       Menu.js           fast-travel menu ("Where to?"): DOM list of destinations that moves the car; sections expose `destinations`/`destination`
       Theme.js          matcapTexture(hex): matcaps generated from palette colours
       Sections/         one class per themed area of the world (see below)
